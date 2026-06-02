@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Registration System</title>
+</head>
+<body>
+
+<h2>Student Registration</h2>
+
+<input id="studentId" placeholder="Student ID"><br><br>
+<input id="name" placeholder="Name"><br><br>
+<input id="course" placeholder="Course"><br><br>
+<input id="email" placeholder="Email"><br><br>
+
+<button onclick="registerStudent()">Register Student</button>
+<button onclick="getStudents()">View Students</button>
+
+<h3>Output:</h3>
+<pre id="output"></pre>
+
+<script>
+
+const API_URL = "https://cgg0fi7pbd.execute-api.ap-south-1.amazonaws.com/prod/students";
+
+function registerStudent() {
+
+    fetch(API_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            studentId: document.getElementById("studentId").value,
+            name: document.getElementById("name").value,
+            course: document.getElementById("course").value,
+            email: document.getElementById("email").value
+        })
+    })
+    .then(res => res.text())
+    .then(data => {
+        document.getElementById("output").innerText = data;
+    });
+
+}
+
+function getStudents() {
+
+    fetch(API_URL)
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("output").innerText =
+            JSON.stringify(data, null, 2);
+    });
+
+}
+
+</script>
+
+</body>
+</html>

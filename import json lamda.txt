@@ -1,0 +1,38 @@
+import json
+import boto3
+from decimal import Decimal
+
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table('Students')
+
+# convert Decimal to int for JSON
+def convert(data):
+    if isinstance(data, list):
+        return [convert(i) for i in data]
+    if isinstance(data, dict):
+        return {k: convert(v) for k, v in data.items()}
+    if isinstance(data, Decimal):
+        return int(data)
+    return data
+
+
+def lambda_handler(event, context):
+
+    try:
+        method = event.get('httpMethod')
+
+        # POST - Add student
+        if method == 'POST':
+
+            body = json.loads(event['body'])
+
+            table.put_item(
+                Item={
+                    'studentId': int(body['studentId']),
+                    'name': body['name'],
+                    'course': body['course'],
+                    'email': body['email']
+                }
+            )
+
+           
